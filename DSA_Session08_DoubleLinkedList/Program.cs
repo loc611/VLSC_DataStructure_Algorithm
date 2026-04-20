@@ -1,11 +1,9 @@
 ﻿using System;
-// Lớp đại diện cho 1 học sinh
 
+// Lớp đại diện cho 1 học sinh
 public class Student
 {
-    // mã sinh vien, tên sinh viên
     public string Id { get; set; }
-
     public string Name { get; set; }
 
     public Student(string id, string name)
@@ -13,13 +11,14 @@ public class Student
         Id = id;
         Name = name;
     }
+
     public override string ToString()
     {
         return $"Student(Id: {Id}, Name: {Name})";
     }
 }
-// Lớp đai diện cho 1 phần tử (Node)
 
+// Lớp đại diện cho 1 phần tử (Node)
 public class DoubleNode
 {
     public Student student;
@@ -33,8 +32,8 @@ public class DoubleNode
         Next = null;
     }
 }
-// lớp quản lý danh sách
 
+// Lớp quản lý danh sách liên kết đôi
 public class DoubleLinkedList
 {
     public DoubleNode? Head;
@@ -48,44 +47,138 @@ public class DoubleLinkedList
 
     // Thêm phần tử vào cuối (Add Last)
     public void AddLast(Student student)
-{
-    DoubleNode newNode = new DoubleNode(student);
-
-    if (Head == null)
     {
-        Head = Tail = newNode;
-        return;
+        DoubleNode newNode = new DoubleNode(student);
+
+        if (Head == null)
+        {
+            Head = Tail = newNode;
+            return;
+        }
+
+        Tail.Next = newNode;
+        newNode.Prev = Tail;
+        Tail = newNode;
     }
 
-    Tail.Next = newNode; // Móc tail hiện tại với node mới
-    newNode.Prev = Tail; // Móc node mới quay ngược lại tail cũ
-    Tail = newNode;      // Cập nhật Tail là node mới
-}
-// Duyệt danh sách từ đầu đến cuối
-public void PrintForward()
-{
-    DoubleNode current = Head;
-    Console.Write("Tiến: null <-> ");
-    while (current != null)
+    // Đếm số node
+    public int GetSize()
     {
-        Console.Write($"{current.student} <-> ");
-        current = current.Next;
+        int count = 0;
+        DoubleNode current = Head;
+        while (current != null)
+        {
+            count++;
+            current = current.Next;
+        }
+        return count;
     }
-    Console.WriteLine("null");
+
+    // Xóa node theo Id
+    public void RemoveNode(string studentId)
+    {
+        DoubleNode current = Head;
+        while (current != null)
+        {
+            if (current.student.Id == studentId)
+            {
+                if (current == Head)
+                {
+                    Head = current.Next;
+                    if (Head != null)
+                        Head.Prev = null;
+                }
+                else if (current == Tail)
+                {
+                    Tail = current.Prev;
+                    if (Tail != null)
+                        Tail.Next = null;
+                }
+                else
+                {
+                    current.Prev.Next = current.Next;
+                    current.Next.Prev = current.Prev;
+                }
+                return;
+            }
+            current = current.Next;
+        }
+    }
+
+    // Chèn sau index
+    public void InsertAfterIndex(int index, Student student)
+    {
+        if (index < 0 || index >= GetSize())
+        {
+            Console.WriteLine("Vị trí chèn không hợp lệ.");
+            return;
+        }
+
+        DoubleNode newNode = new DoubleNode(student);
+        DoubleNode current = Head;
+
+        for (int i = 0; i < index; i++)
+        {
+            current = current.Next;
+        }
+
+        newNode.Next = current.Next;
+        newNode.Prev = current;
+        if (current.Next != null)
+            current.Next.Prev = newNode;
+        else
+            Tail = newNode;
+        current.Next = newNode;
+    }
+
+    // Đảo ngược danh sách
+    public void Reverse()
+    {
+        DoubleNode current = Head;
+        DoubleNode temp = null;
+
+        while (current != null)
+        {
+            temp = current.Prev;
+            current.Prev = current.Next;
+            current.Next = temp;
+            current = current.Prev;
+        }
+
+        if (temp != null)
+        {
+            Head = temp.Prev;
+        }
+    }
+
+    // Duyệt từ đầu đến cuối
+    public void PrintForward()
+    {
+        DoubleNode current = Head;
+        Console.Write("Tiến: null <-> ");
+        while (current != null)
+        {
+            Console.Write($"{current.student} <-> ");
+            current = current.Next;
+        }
+        Console.WriteLine("null");
+    }
+
+    // Duyệt từ cuối về đầu
+    public void PrintBackward()
+    {
+        DoubleNode current = Tail;
+        Console.Write("Lùi: null <-> ");
+        while (current != null)
+        {
+            Console.Write($"{current.student} <-> ");
+            current = current.Prev;
+        }
+        Console.WriteLine("null");
+    }
 }
 
-// Duyệt danh sách từ cuối về đầu (Ưu thế tuyệt đối của DLL)
-public void PrintBackward()
-{
-    DoubleNode current = Tail;
-    Console.Write("Lùi: null <-> ");
-    while (current != null)
-    {
-        Console.Write($"{current.student} <-> ");
-        current = current.Prev;
-    }
-    Console.WriteLine("null");
-}
+// Chương trình chính
 class Program
 {
     static void Main()
@@ -98,6 +191,4 @@ class Program
         list.PrintForward();
         list.PrintBackward();
     }
-}
-
 }
