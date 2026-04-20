@@ -4,4 +4,5 @@
   <Project Path="DSA_Session08_Queue/DSA_Session08_Queue.csproj" />
   <Project Path="DSA_Session08_Queue_01/DSA_Session08_Queue_01.csproj" />
   <Project Path="DSA_Session08_Queue_02/DSA_Session08_Queue_02.csproj" />
+  <Project Path="DSA_Session08_Queue_03/DSA_Session08_Queue_03.csproj" />
 </Solution>
